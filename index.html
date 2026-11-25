@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>琉大新サークル設立審査会 リザルト発表</title>
+<style>
+  :root{
+    --bg:#EDF7F8;
+    --ink:#123A42;
+    --teal:#0E7C7B;
+    --teal-mid:#3AAFA9;
+    --teal-light:#7ACFC8;
+    --teal-pale:#BFE8E4;
+    --card:#FFFFFF;
+    --accent:#FFC93C;
+    --error:#B3261E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+  }
+  button{font-family:inherit;cursor:pointer;}
+  input[type="text"],input[type="url"]{font-family:inherit;}
+  .hidden{display:none !important;}
+
+  /* ---------- セットアップ画面 ---------- */
+  #setup{max-width:960px;margin:0 auto;padding:32px 20px 64px;}
+  #setup h1{font-size:28px;color:var(--ink);margin-bottom:4px;}
+  #setup .sub{color:var(--teal);font-weight:700;margin-bottom:24px;}
+  .panel{
+    background:var(--card);border-radius:16px;padding:20px 24px;margin-bottom:20px;
+    box-shadow:0 2px 10px rgba(18,58,66,.08);
+  }
+  .panel h2{font-size:18px;margin-bottom:12px;color:var(--teal);}
+  .panel p{font-size:14px;line-height:1.7;margin-bottom:10px;}
+  #dropzone{
+    border:3px dashed var(--teal-light);border-radius:12px;padding:28px;text-align:center;
+    font-size:16px;color:var(--teal);background:#F7FCFC;transition:background .2s;
+  }
+  #dropzone.dragover{background:var(--teal-pale);}
+  .btn{
+    display:inline-block;border:none;border-radius:999px;padding:10px 22px;
+    font-size:15px;font-weight:700;background:var(--teal);color:#fff;
+  }
+  .btn.secondary{background:#fff;color:var(--teal);border:2px solid var(--teal);}
+  .btn.big{font-size:20px;padding:14px 36px;}
+  .btn.small{font-size:13px;padding:6px 14px;}
+  .btn:disabled{opacity:.4;cursor:default;}
+  .url-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
+  .url-row input[type="url"]{
+    flex:1;min-width:280px;font-size:14px;padding:10px 12px;
+    border:2px solid var(--teal-pale);border-radius:8px;color:var(--ink);background:#fff;
+  }
+  .checkline{display:flex;gap:8px;align-items:center;font-size:14px;font-weight:700;}
+  .status{font-size:13px;color:#5A7A80;line-height:1.7;}
+  .status.error{color:var(--error);font-weight:700;}
+  .map-grid{display:grid;grid-template-columns:190px 1fr;gap:10px 14px;align-items:center;}
+  .map-grid label{font-size:14px;font-weight:700;}
+  .map-grid select{
+    font-size:15px;padding:8px;border:2px solid var(--teal-pale);border-radius:8px;width:100%;
+    font-family:inherit;background:#fff;color:var(--ink);
+  }
+  table{width:100%;border-collapse:collapse;font-size:15px;}
+  th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--teal-pale);}
+  th{color:var(--teal);}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
+  .order-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--teal-pale);flex-wrap:wrap;}
+  .order-row .gname{font-size:17px;font-weight:700;}
+  .order-row .circle-input{
+    flex:1;min-width:180px;font-size:14px;padding:7px 10px;
+    border:2px solid var(--teal-pale);border-radius:8px;color:var(--ink);
+  }
+  .order-row .meta{font-size:13px;color:var(--teal);}
+  .mini-btn{
+    border:2px solid var(--teal-pale);background:#fff;border-radius:8px;
+    width:36px;height:36px;font-size:16px;color:var(--teal);line-height:1;flex:none;
+  }
+  .mini-btn:disabled{opacity:.3;}
+  .note{font-size:13px;color:#5A7A80;line-height:1.7;}
+
+  /* 寸評選択 */
+  .cmt-group{border:2px solid var(--teal-pale);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+  .cmt-group h3{font-size:16px;margin-bottom:8px;color:var(--ink);}
+  .cmt-group h3 .csub{color:var(--teal);font-size:13px;margin-left:8px;}
+  .cmt-row{
+    display:flex;align-items:center;gap:8px;padding:6px 4px;
+    border-bottom:1px solid #E4F2F1;font-size:14px;
+  }
+  .cmt-row:last-of-type{border-bottom:none;}
+  .cmt-row input[type="checkbox"]{width:18px;height:18px;flex:none;accent-color:var(--teal);}
+  .cmt-row .pos{
+    flex:none;width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;
+    font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  }
+  .cmt-row .pos.off{background:#C9DCDD;}
+  .cmt-row .kind{flex:none;font-size:12px;font-weight:700;color:var(--teal);}
+  .cmt-row .kind.concern{color:#A87F1F;}
+  .cmt-row .ctext{flex:1;line-height:1.5;word-break:break-all;}
+  .cmt-row .mini-btn{width:30px;height:30px;font-size:13px;}
+  .caption-line{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;}
+  .caption-line label{font-size:13px;font-weight:700;flex:none;}
+  .caption-line input[type="text"]{
+    flex:1;min-width:220px;font-size:14px;padding:8px 10px;
+    border:2px solid var(--teal-pale);border-radius:8px;color:var(--ink);
+  }
+  .closing-input{
+    width:100%;font-size:15px;padding:10px 12px;border:2px solid var(--teal-pale);
+    border-radius:8px;color:var(--ink);
+  }
+
+  /* ---------- 発表ステージ ---------- */
+  #stage{
+    position:fixed;inset:0;background:var(--bg);z-index:50;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:4vh 5vw;user-select:none;overflow:hidden;
+  }
+  #stage .progress{
+    position:absolute;top:22px;left:0;right:0;font-size:18px;color:var(--teal);font-weight:700;
+  }
+  #stage .progress .pending{color:var(--error);font-size:14px;margin-left:10px;}
+  #stage .group-name{font-size:clamp(24px,3.6vw,44px);font-weight:700;color:var(--teal);}
+  #stage .cover-circle{
+    font-size:clamp(44px,7.5vw,104px);font-weight:900;color:var(--ink);line-height:1.25;margin-top:1vh;
+  }
+  #stage .cover-q{
+    font-size:clamp(110px,22vw,260px);font-weight:900;color:var(--teal-mid);line-height:1.1;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+  #stage .cover-label{font-size:clamp(22px,3.4vw,40px);font-weight:700;margin-top:1vh;}
+
+  /* ことば（寸評）フェーズ */
+  .words-label{
+    font-size:clamp(22px,3vw,38px);font-weight:900;color:#fff;background:var(--teal);
+    border-radius:999px;padding:10px 34px;margin-bottom:3vh;
+  }
+  .words-count{font-size:clamp(16px,2vw,24px);color:var(--teal);font-weight:700;margin-bottom:1.5vh;}
+  .word-card{
+    background:#fff;border:4px solid var(--accent);border-radius:20px;
+    padding:30px 44px;font-size:clamp(26px,3.8vw,52px);font-weight:700;line-height:1.5;
+    width:min(1100px,92vw);box-shadow:0 6px 24px rgba(18,58,66,.14);
+    animation:pop .35s cubic-bezier(.2,1.6,.4,1);
+  }
+  .word-card .kind{font-size:.48em;color:var(--teal);display:block;font-weight:700;margin-bottom:8px;}
+  .word-card .kind.concern{color:#A87F1F;}
+
+  /* 判定フェーズ */
+  .judge-wrap{position:relative;display:flex;flex-direction:column;align-items:center;}
+  .star-svg{width:clamp(140px,20vw,240px);height:auto;animation:pop .55s cubic-bezier(.2,1.6,.4,1);}
+  @keyframes pop{0%{transform:scale(0) rotate(-30deg);}100%{transform:scale(1) rotate(0);}}
+  .medal-svg{width:clamp(90px,12vw,150px);height:auto;margin-top:1vh;animation:pop .55s cubic-bezier(.2,1.6,.4,1);}
+  .judge-text{
+    font-size:clamp(64px,12vw,176px);font-weight:900;color:var(--ink);line-height:1.15;
+    margin-top:1vh;animation:pop .55s cubic-bezier(.2,1.6,.4,1);
+  }
+  .judge-caption{
+    font-size:clamp(22px,3.2vw,42px);font-weight:700;color:var(--ink);line-height:1.5;
+    margin-top:2.5vh;width:min(1000px,90vw);
+  }
+  .judge-avg{font-size:clamp(14px,1.6vw,20px);color:#5A7A80;font-weight:700;margin-top:3vh;}
+
+  /* 締め画面 */
+  .finale-title{font-size:clamp(36px,6vw,84px);font-weight:900;color:var(--ink);margin-bottom:2.5vh;}
+  .finale-message{
+    font-size:clamp(20px,2.8vw,36px);font-weight:700;line-height:1.6;
+    width:min(1000px,90vw);margin-bottom:4vh;
+  }
+  .finale-list{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;width:min(1100px,94vw);}
+  .finale-chip{
+    background:#fff;border:3px solid var(--teal-light);border-radius:999px;
+    padding:12px 28px;font-size:clamp(18px,2.4vw,30px);font-weight:700;color:var(--ink);
+  }
+
+  .confetti{position:absolute;border-radius:50%;pointer-events:none;animation:fall linear forwards;}
+  @keyframes fall{to{transform:translateY(105vh) rotate(360deg);opacity:.7;}}
+  .stage-nav{
+    position:absolute;bottom:26px;left:0;right:0;display:flex;gap:14px;justify-content:center;align-items:center;
+  }
+  .stage-nav .hint{font-size:14px;color:#5A7A80;}
+</style>
+</head>
+<body>
+
+<!-- ================= セットアップ ================= -->
+<div id="setup">
+  <h1>琉大新サークル設立審査会</h1>
+  <div class="sub">リザルト発表アプリ（審査会事務局用）</div>
+
+  <div class="panel">
+    <h2>1. 回答データを取り込む（CSVファイル）</h2>
+    <p>Googleフォームの回答をCSVでダウンロードして、ここに読み込ませてください（手順は README 参照）。</p>
+    <div id="dropzone">
+      CSVファイルをここにドラッグ＆ドロップ<br>
+      <span style="font-size:14px;">または</span><br>
+      <label class="btn secondary" for="file-input" style="margin-top:8px;">ファイルを選ぶ</label>
+      <input type="file" id="file-input" accept=".csv,text/csv" class="hidden">
+    </div>
+    <p style="margin-top:14px;">
+      <button class="btn secondary" id="sample-btn">サンプルデータで試す</button>
+      <span class="note" id="load-status" style="margin-left:10px;"></span>
+    </p>
+  </div>
+
+  <div class="panel">
+    <h2>1-B. 回答データをURLから取り込む（リアルタイム）</h2>
+    <p>スプレッドシートを「ウェブに公開」したCSVリンク、または GAS WebアプリのJSONエンドポイントURLを貼ると、ネット経由で回答を取り込めます。設定方法は README を参照してください。</p>
+    <div class="url-row">
+      <input type="url" id="url-input" placeholder="https://… （公開CSVリンク または GASのURL）">
+      <button class="btn" id="url-load-btn">URLから読み込む</button>
+      <button class="btn secondary" id="url-refresh-btn">更新</button>
+    </div>
+    <label class="checkline">
+      <input type="checkbox" id="url-auto-check" style="width:18px;height:18px;accent-color:var(--teal);">
+      自動更新する（30秒ごとに新しい回答を取り込む）
+    </label>
+    <p class="status" id="url-status" style="margin-top:8px;"></p>
+    <p class="note">取得に失敗する場合は、公開設定（リンクを知っている全員が閲覧可／GASは「全員」アクセスでデプロイ）を確認してください。それでも難しい場合は、上のCSV方式で取り込めます。</p>
+  </div>
+
+  <div class="panel hidden" id="mapping-panel">
+    <h2>2. 列の対応を確認する</h2>
+    <p>CSVの列名が想定と違う場合は、ここで割り当て直してください。サークル名の列は任意です（無ければ発表順の画面で直接入力できます）。</p>
+    <div class="map-grid">
+      <label for="map-group">グループ名の列</label>
+      <select id="map-group"></select>
+      <label for="map-circle">サークル名の列（任意）</label>
+      <select id="map-circle"></select>
+      <label for="map-score">賛成度（5段階）の列</label>
+      <select id="map-score"></select>
+      <label for="map-good">「良かった点」の列</label>
+      <select id="map-good"></select>
+      <label for="map-concern">「気になった点」の列</label>
+      <select id="map-concern"></select>
+    </div>
+  </div>
+
+  <div class="panel hidden" id="summary-panel">
+    <h2>3. 集計結果（発表者用の確認）</h2>
+    <table>
+      <thead><tr><th>グループ</th><th>サークル名</th><th class="num">回答数</th><th class="num">賛成度の平均</th><th>判定</th></tr></thead>
+      <tbody id="summary-body"></tbody>
+    </table>
+    <p class="note" style="margin-top:10px;">平均と判定は発表者だけが事前に確認するための表示です。発表画面では数値は主役にせず、ことば（寸評）と判定だけを大きく出します。</p>
+  </div>
+
+  <div class="panel hidden" id="order-panel">
+    <h2>4. 発表の順番とサークル名を決める</h2>
+    <p>発表順（出番順）に並べてください。スコア順ではありません。サークル名はここで入力・修正できます。</p>
+    <div id="order-list"></div>
+  </div>
+
+  <div class="panel hidden" id="comment-panel">
+    <h2>5. 届ける「ことば」を選ぶ</h2>
+    <p>発表では、判定の前に「サークル審査係からのことば」として、選んだコメントを1件ずつ大きく表示します（最大2〜3件が目安）。チェックで選び、↑↓で順番を変えられます。総評的なコメントは最後に回すのがおすすめです。「判定のあとに添える一言」は、判定画面で判定語の下に1行だけ出ます。</p>
+    <div id="comment-groups"></div>
+  </div>
+
+  <div class="panel hidden" id="start-panel">
+    <h2>6. 締めの画面と発表開始</h2>
+    <p>全グループの発表が終わったあとの締め画面に出す一言です（判定は並べません）。</p>
+    <input type="text" class="closing-input" id="closing-input" value="どのサークルにも、審査係からのことばが届きました。みなさん、おつかれさまでした！">
+    <p style="margin-top:18px;text-align:center;">
+      <button class="btn big" id="start-btn">発表をはじめる</button>
+    </p>
+    <p class="note" style="text-align:center;">発表画面では → キー／クリックで進みます（カバー → ことば → 判定 → 次のグループ…）。Esc でこの画面に戻ります。</p>
+  </div>
+</div>
+
+<!-- ================= 発表ステージ ================= -->
+<div id="stage" class="hidden">
+  <div class="progress"><span id="stage-progress"></span><span class="pending hidden" id="stage-pending">新しい回答が届いています（Escで戻ると反映されます）</span></div>
+
+  <div id="phase-cover">
+    <div class="group-name" id="cover-group"></div>
+    <div class="cover-circle" id="cover-circle"></div>
+    <div class="cover-q">？</div>
+    <div class="cover-label">まずは、審査係からのことばをどうぞ</div>
+  </div>
+
+  <div id="phase-words" class="hidden" style="display:flex;flex-direction:column;align-items:center;">
+    <div class="words-label">サークル審査係からのことば</div>
+    <div class="group-name" id="words-group"></div>
+    <div class="words-count" id="words-count"></div>
+    <div class="word-card" id="word-card">
+      <span class="kind" id="word-kind"></span>
+      <span id="word-text"></span>
+    </div>
+  </div>
+
+  <div id="phase-judge" class="hidden">
+    <div class="group-name" id="judge-group"></div>
+    <div class="judge-wrap">
+      <svg class="star-svg" viewBox="0 0 200 200" aria-hidden="true">
+        <polygon points="100,6 124,70 192,72 138,114 156,180 100,142 44,180 62,114 8,72 76,70"
+          fill="#FFC93C" stroke="#0E7C7B" stroke-width="5" stroke-linejoin="round"/>
+      </svg>
+      <div class="judge-text" id="judge-text"></div>
+      <svg class="medal-svg hidden" id="judge-medal" viewBox="0 0 200 220" aria-hidden="true">
+        <polygon points="70,110 45,205 100,175 155,205 130,110" fill="#3AAFA9" stroke="#0E7C7B" stroke-width="5" stroke-linejoin="round"/>
+        <circle cx="100" cy="85" r="62" fill="#FFC93C" stroke="#0E7C7B" stroke-width="5"/>
+        <polygon points="100,48 111,73 138,74 117,91 124,117 100,102 76,117 83,91 62,74 89,73"
+          fill="#FFFFFF" stroke="#0E7C7B" stroke-width="3" stroke-linejoin="round"/>
+      </svg>
+      <div class="judge-caption hidden" id="judge-caption"></div>
+      <div class="judge-avg" id="judge-avg"></div>
+    </div>
+  </div>
+
+  <div id="phase-finale" class="hidden" style="display:flex;flex-direction:column;align-items:center;">
+    <div class="finale-title">今日の審査会まとめ</div>
+    <div class="finale-message" id="finale-message"></div>
+    <div class="finale-list" id="finale-list"></div>
+  </div>
+
+  <div class="stage-nav">
+    <button class="btn secondary" id="back-btn">← もどる</button>
+    <span class="hint">クリック / → キーで進む ・ Escで終了</span>
+    <button class="btn" id="next-btn">つぎへ →</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ===== PURE_LOGIC_BEGIN =====
+   純粋ロジック（DOM非依存・nodeで検証可能） */
+
+// RFC4180 風CSVパーサ（引用符・カンマ・改行・"" エスケープ対応）
+function parseCSV(text){
+  const rows = [];
+  let row = [], field = "", inQuotes = false;
+  const s = String(text).replace(/^\uFEFF/, "");
+  for (let i = 0; i < s.length; i++){
+    const c = s[i];
+    if (inQuotes){
+      if (c === '"'){
+        if (s[i+1] === '"'){ field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else if (c === '"'){
+      inQuotes = true;
+    } else if (c === ','){
+      row.push(field); field = "";
+    } else if (c === '\n'){
+      row.push(field); field = "";
+      rows.push(row); row = [];
+    } else if (c === '\r'){
+      // CR は LF とセットで処理されるので無視
+    } else field += c;
+  }
+  if (field.length > 0 || row.length > 0){ row.push(field); rows.push(row); }
+  return rows.filter(r => !(r.length === 1 && r[0].trim() === ""));
+}
+
+// 賛成度の値を数値化（"5" / "5 とても賛成" / "とても賛成" 等に対応）
+function parseScore(v){
+  if (v == null) return null;
+  if (typeof v === "number") return (v >= 1 && v <= 5) ? v : null;
+  const str = String(v).trim();
+  const m = str.match(/[1-5]/);
+  if (m) return parseInt(m[0], 10);
+  if (str.includes("とても賛成")) return 5;
+  if (str.includes("賛成")) return 4;
+  if (str.includes("どちらとも")) return 3;
+  if (str.includes("あまり")) return 2;
+  if (str.includes("反対")) return 1;
+  return null;
+}
+
+// 判定バンド（リズム天国式：全部ポジティブ〜中立）
+function bandFor(avg){
+  if (avg >= 4.5) return "ハイレベル！";
+  if (avg >= 4.0) return "かなりいいかんじ！";
+  if (avg >= 3.0) return "平凡！";
+  if (avg >= 2.0) return "あと一歩！";
+  return "再チャレンジ！";
+}
+
+// コメント項目の一覧（良かった点→気になった点の順、ID付き）
+function commentItems(r){
+  const items = [];
+  r.goods.forEach((t, i) => items.push({ id: "g" + i, kind: "良かった点", text: t, concern: false }));
+  r.concerns.forEach((t, i) => items.push({ id: "c" + i, kind: "気になった点", text: t, concern: true }));
+  return items;
+}
+
+// 既定の「ことば」キュー：良かった点の先頭から最大3件
+function defaultQueue(r){
+  return r.goods.slice(0, 3).map((_, i) => "g" + i);
+}
+
+// 集計：出現順を保持し、グループごとに平均・判定・コメントをまとめる
+function aggregateRows(records, map){
+  const order = [];
+  const groups = {};
+  for (const rec of records){
+    const gname = String(rec[map.group] ?? "").trim();
+    if (!gname) continue;
+    if (!groups[gname]){
+      groups[gname] = { name: gname, circle: "", scores: [], goods: [], concerns: [] };
+      order.push(gname);
+    }
+    const g = groups[gname];
+    if (map.circle >= 0 && !g.circle){
+      const c = String(rec[map.circle] ?? "").trim();
+      if (c) g.circle = c;
+    }
+    const sc = parseScore(rec[map.score]);
+    if (sc != null) g.scores.push(sc);
+    const good = String(rec[map.good] ?? "").trim();
+    if (good) g.goods.push(good);
+    const concern = String(rec[map.concern] ?? "").trim();
+    if (concern) g.concerns.push(concern);
+  }
+  return order.map(name => {
+    const g = groups[name];
+    const avg = g.scores.length ? g.scores.reduce((a, b) => a + b, 0) / g.scores.length : 0;
+    const r = {
+      name, circle: g.circle, count: g.scores.length, avg,
+      band: bandFor(avg), goods: g.goods, concerns: g.concerns,
+      queue: [], caption: "",
+    };
+    r.queue = defaultQueue(r);
+    return r;
+  });
+}
+
+// GAS等から返るJSONを、見出し＋レコード（配列の配列）に正規化する
+// 受け付けるキー： group/circle/score/good/concern または日本語キー
+const JSON_HEADERS = ["グループ名", "サークル名", "賛成度", "良かった点", "気になった点"];
+function normalizeJSON(data){
+  let arr = null;
+  if (Array.isArray(data)) arr = data;
+  else if (data && Array.isArray(data.responses)) arr = data.responses;
+  else if (data && Array.isArray(data.rows)) arr = data.rows;
+  if (!arr) return null;
+  const pick = (obj, keys) => {
+    for (const k of keys){
+      if (obj != null && obj[k] != null && obj[k] !== "") return obj[k];
+    }
+    return "";
+  };
+  const records = arr.map(o => [
+    pick(o, ["group", "グループ名", "団体名", "申請団体"]),
+    pick(o, ["circle", "サークル名"]),
+    pick(o, ["score", "賛成度"]),
+    pick(o, ["good", "良かった点"]),
+    pick(o, ["concern", "気になった点"]),
+  ].map(v => String(v ?? "")));
+  return { headers: JSON_HEADERS.slice(), records };
+}
+
+/* 発表ステージの状態遷移（純粋関数）
+   pos = { current, phase: "cover"|"words"|"judge"|"finale"|"done", wordIndex }
+   results[i].queue = そのグループで表示することばのID配列 */
+function advancePos(pos, results){
+  const r = results[pos.current];
+  if (!r) return pos;
+  if (pos.phase === "cover"){
+    if (r.queue.length) return { current: pos.current, phase: "words", wordIndex: 0 };
+    return { current: pos.current, phase: "judge", wordIndex: 0 };
+  }
+  if (pos.phase === "words"){
+    if (pos.wordIndex < r.queue.length - 1)
+      return { current: pos.current, phase: "words", wordIndex: pos.wordIndex + 1 };
+    return { current: pos.current, phase: "judge", wordIndex: 0 };
+  }
+  if (pos.phase === "judge"){
+    if (pos.current < results.length - 1)
+      return { current: pos.current + 1, phase: "cover", wordIndex: 0 };
+    return { current: pos.current, phase: "finale", wordIndex: 0 };
+  }
+  if (pos.phase === "finale") return { current: pos.current, phase: "done", wordIndex: 0 };
+  return pos;
+}
+function retreatPos(pos, results){
+  const r = results[pos.current];
+  if (!r) return pos;
+  if (pos.phase === "words"){
+    if (pos.wordIndex > 0)
+      return { current: pos.current, phase: "words", wordIndex: pos.wordIndex - 1 };
+    return { current: pos.current, phase: "cover", wordIndex: 0 };
+  }
+  if (pos.phase === "judge"){
+    if (r.queue.length)
+      return { current: pos.current, phase: "words", wordIndex: r.queue.length - 1 };
+    return { current: pos.current, phase: "cover", wordIndex: 0 };
+  }
+  if (pos.phase === "finale"){
+    return { current: pos.current, phase: "judge", wordIndex: 0 };
+  }
+  if (pos.phase === "cover" && pos.current > 0){
+    const prev = results[pos.current - 1];
+    return { current: pos.current - 1, phase: "judge", wordIndex: Math.max(0, prev.queue.length - 1) };
+  }
+  return pos;
+}
+/* ===== PURE_LOGIC_END ===== */
+
+/* ============ サンプルデータ ============ */
+const SAMPLE_CSV = [
+  "タイムスタンプ,いま発表を聞いたグループ,サークル名,賛成度,良かった点,気になった点",
+  '2026/11/27 13:01,グループ1,星空観察サークル,5,"キャンパスで星を見るという発想がロマンチックで、ぜひ参加したいと思った",活動費の内訳が少し分かりにくかった',
+  '2026/11/27 13:02,グループ1,星空観察サークル,5,望遠鏡がなくても楽しめる工夫があって初心者でも入りやすそう,雨の日プランがあると安心',
+  '2026/11/27 13:03,グループ1,星空観察サークル,4,発表が分かりやすくて星空への愛が伝わってきた,',
+  '2026/11/27 13:04,グループ1,星空観察サークル,5,"マインドマップで活動内容が整理されていて、季節ごとのイベントが具体的だった",メンバー募集の方法をもっと知りたい',
+  '2026/11/27 13:05,グループ1,星空観察サークル,4,既存の天文部との違いがはっきりしていた,',
+  '2026/11/27 13:06,グループ2,ボードゲームサークル,4,誰でも参加できる雰囲気が伝わってきた,活動場所が毎回変わると迷いそう',
+  '2026/11/27 13:07,グループ2,ボードゲームサークル,3,ゲームの種類が豊富で楽しそうだった,初心者向けのルール説明会があるといい',
+  '2026/11/27 13:08,グループ2,ボードゲームサークル,4,"発表の掛け合いが面白くて、サークルの空気感がよく分かった",',
+  '2026/11/27 13:09,グループ2,ボードゲームサークル,3,大会を開くという目標があってワクワクした,人数が増えたときの運営が心配',
+  '2026/11/27 13:10,グループ2,ボードゲームサークル,4,,ボードゲームの購入費をどう集めるのか気になった',
+  '2026/11/27 13:11,グループ3,沖縄そば研究会,5,試食会の企画が魅力的すぎる,',
+  '2026/11/27 13:12,グループ3,沖縄そば研究会,4,地域のお店と連携するアイデアが面白い,食材費の負担が大きくなりそう',
+  '2026/11/27 13:13,グループ3,沖縄そば研究会,5,"発表者全員が楽しそうに話していて、応援したくなった",学外での活動の許可が要りそう',
+  '2026/11/27 13:14,グループ3,沖縄そば研究会,4,活動頻度がちょうどよくて参加しやすそう,',
+  '2026/11/27 13:15,グループ3,沖縄そば研究会,3,コンセプトは好き,研究会という名前の割に研究要素の説明が少なかった',
+  '2026/11/27 13:16,グループ4,夜ふかし読書会,2,静かに本を読む時間という発想は好き,活動内容がそれだけで大丈夫か不安',
+  '2026/11/27 13:17,グループ4,夜ふかし読書会,3,感想を共有する仕組みがあるのはいい,夜遅い活動だと帰宅が心配',
+  '2026/11/27 13:18,グループ4,夜ふかし読書会,2,,発表が少し短くて魅力が伝わりきらなかった',
+  '2026/11/27 13:19,グループ4,夜ふかし読書会,3,本好き同士が集まれる場所は貴重だと思う,オンライン併用だと参加しやすい',
+  '2026/11/27 13:20,グループ4,夜ふかし読書会,2,コンセプトの世界観は面白い,メンバーが集まるか心配'
+].join("\n");
+
+/* ============ アプリ状態 ============ */
+const state = {
+  headers: [],
+  records: [],
+  results: [],            // 集計結果（発表順）
+  store: {},              // グループ名 → { queue, caption, circle }（再集計時に保持）
+  orderNames: [],         // 発表順（グループ名の配列）
+  pos: { current: 0, phase: "cover", wordIndex: 0 },
+  pendingData: null,      // 発表中に届いた新データ
+  lastFetchKey: "",       // 取得データの同一判定用
+  autoTimer: null,
+};
+
+const $ = id => document.getElementById(id);
+
+/* ============ 列マッピング ============ */
+function guessColumn(headers, keywords){
+  for (let i = 0; i < headers.length; i++){
+    if (keywords.some(k => headers[i].includes(k))) return i;
+  }
+  return -1;
+}
+const MAP_DEFS = [
+  ["map-group",   ["グループ", "団体", "発表を聞いた"]],
+  ["map-circle",  ["サークル名", "サークル"]],
+  ["map-score",   ["賛成度", "賛成", "支持", "スコア", "評価"]],
+  ["map-good",    ["良かった", "よかった", "良い点", "魅力"]],
+  ["map-concern", ["気になった", "改善", "心配", "課題"]],
+];
+function fillMappingSelects(restore){
+  for (const [id, keywords] of MAP_DEFS){
+    const sel = $(id);
+    const prevHeader = restore ? restore[id] : null;
+    sel.innerHTML = "";
+    const none = document.createElement("option");
+    none.value = "-1"; none.textContent = "（なし）";
+    sel.appendChild(none);
+    state.headers.forEach((h, i) => {
+      const opt = document.createElement("option");
+      opt.value = String(i); opt.textContent = h || ("列" + (i + 1));
+      sel.appendChild(opt);
+    });
+    let v = guessColumn(state.headers, keywords);
+    if (prevHeader != null){
+      const idx = state.headers.indexOf(prevHeader);
+      if (idx >= 0) v = idx;
+    }
+    sel.value = String(v);
+  }
+}
+function mappingHeaderNames(){
+  const out = {};
+  for (const [id] of MAP_DEFS){
+    const sel = $(id);
+    const v = parseInt(sel.value, 10);
+    out[id] = v >= 0 ? state.headers[v] : null;
+  }
+  return out;
+}
+function currentMap(){
+  return {
+    group:   parseInt($("map-group").value, 10),
+    circle:  parseInt($("map-circle").value, 10),
+    score:   parseInt($("map-score").value, 10),
+    good:    parseInt($("map-good").value, 10),
+    concern: parseInt($("map-concern").value, 10),
+  };
+}
+
+/* ============ 集計・順番・ことば選択UI ============ */
+function recompute(){
+  const map = currentMap();
+  if (map.group < 0 || map.score < 0){
+    ["summary-panel", "order-panel", "comment-panel", "start-panel"]
+      .forEach(id => $(id).classList.add("hidden"));
+    return;
+  }
+  let results = aggregateRows(state.records, map);
+  // 前回の選択（キュー・一言・サークル名）をグループ名キーで引き継ぐ
+  for (const r of results){
+    const saved = state.store[r.name];
+    if (saved){
+      const validIds = new Set(commentItems(r).map(it => it.id));
+      r.queue = saved.queue.filter(id => validIds.has(id));
+      r.caption = saved.caption || "";
+      if (saved.circle) r.circle = saved.circle;
+    }
+  }
+  // 発表順を引き継ぐ（新しいグループは末尾）
+  if (state.orderNames.length){
+    const byName = {};
+    results.forEach(r => { byName[r.name] = r; });
+    const ordered = [];
+    for (const n of state.orderNames) if (byName[n]){ ordered.push(byName[n]); delete byName[n]; }
+    for (const r of results) if (byName[r.name]) ordered.push(r);
+    results = ordered;
+  }
+  state.results = results;
+  state.orderNames = results.map(r => r.name);
+  renderSummary();
+  renderOrder();
+  renderCommentPanel();
+  ["summary-panel", "order-panel", "comment-panel", "start-panel"]
+    .forEach(id => $(id).classList.remove("hidden"));
+  $("start-btn").disabled = state.results.length === 0;
+}
+function renderSummary(){
+  const body = $("summary-body");
+  body.innerHTML = "";
+  for (const r of state.results){
+    const tr = document.createElement("tr");
+    const tdName = document.createElement("td"); tdName.textContent = r.name;
+    const tdCircle = document.createElement("td"); tdCircle.textContent = r.circle || "（未入力）";
+    const tdCnt = document.createElement("td"); tdCnt.className = "num"; tdCnt.textContent = r.count;
+    const tdAvg = document.createElement("td"); tdAvg.className = "num"; tdAvg.textContent = r.avg.toFixed(2);
+    const tdBand = document.createElement("td"); tdBand.textContent = r.band;
+    tr.append(tdName, tdCircle, tdCnt, tdAvg, tdBand);
+    body.appendChild(tr);
+  }
+}
+function renderOrder(){
+  const list = $("order-list");
+  list.innerHTML = "";
+  state.results.forEach((r, i) => {
+    const row = document.createElement("div");
+    row.className = "order-row";
+    const name = document.createElement("div");
+    name.className = "gname";
+    name.textContent = (i + 1) + ". " + r.name;
+    const circle = document.createElement("input");
+    circle.type = "text";
+    circle.className = "circle-input";
+    circle.placeholder = "サークル名（例：星空観察サークル）";
+    circle.value = r.circle;
+    circle.addEventListener("change", () => {
+      r.circle = circle.value.trim();
+      saveStore(r);
+      renderSummary();
+      renderCommentPanel();
+    });
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = "回答 " + r.count + " 件";
+    const up = document.createElement("button");
+    up.className = "mini-btn"; up.textContent = "↑"; up.disabled = i === 0;
+    up.addEventListener("click", () => moveGroup(i, -1));
+    const down = document.createElement("button");
+    down.className = "mini-btn"; down.textContent = "↓"; down.disabled = i === state.results.length - 1;
+    down.addEventListener("click", () => moveGroup(i, 1));
+    row.append(name, circle, meta, up, down);
+    list.appendChild(row);
+  });
+}
+function moveGroup(i, delta){
+  const j = i + delta;
+  if (j < 0 || j >= state.results.length) return;
+  const tmp = state.results[i];
+  state.results[i] = state.results[j];
+  state.results[j] = tmp;
+  state.orderNames = state.results.map(r => r.name);
+  renderOrder();
+}
+function saveStore(r){
+  state.store[r.name] = { queue: r.queue.slice(), caption: r.caption, circle: r.circle };
+}
+function renderCommentPanel(){
+  const wrap = $("comment-groups");
+  wrap.innerHTML = "";
+  for (const r of state.results){
+    const box = document.createElement("div");
+    box.className = "cmt-group";
+    const h = document.createElement("h3");
+    h.textContent = r.name;
+    if (r.circle){
+      const sub = document.createElement("span");
+      sub.className = "csub"; sub.textContent = r.circle;
+      h.appendChild(sub);
+    }
+    box.appendChild(h);
+    const items = commentItems(r);
+    if (!items.length){
+      const p = document.createElement("p");
+      p.className = "note";
+      p.textContent = "このグループへのコメントはまだありません。";
+      box.appendChild(p);
+    }
+    for (const item of items){
+      const row = document.createElement("div");
+      row.className = "cmt-row";
+      const chk = document.createElement("input");
+      chk.type = "checkbox";
+      chk.checked = r.queue.includes(item.id);
+      chk.addEventListener("change", () => {
+        if (chk.checked) r.queue.push(item.id);
+        else r.queue = r.queue.filter(id => id !== item.id);
+        saveStore(r);
+        renderCommentPanel();
+      });
+      const pos = document.createElement("span");
+      const qi = r.queue.indexOf(item.id);
+      pos.className = "pos" + (qi >= 0 ? "" : " off");
+      pos.textContent = qi >= 0 ? String(qi + 1) : "・";
+      const kind = document.createElement("span");
+      kind.className = "kind" + (item.concern ? " concern" : "");
+      kind.textContent = item.kind;
+      const text = document.createElement("span");
+      text.className = "ctext"; text.textContent = item.text;
+      const up = document.createElement("button");
+      up.className = "mini-btn"; up.textContent = "↑";
+      up.disabled = qi <= 0;
+      up.addEventListener("click", () => moveInQueue(r, item.id, -1));
+      const down = document.createElement("button");
+      down.className = "mini-btn"; down.textContent = "↓";
+      down.disabled = qi < 0 || qi >= r.queue.length - 1;
+      down.addEventListener("click", () => moveInQueue(r, item.id, 1));
+      row.append(chk, pos, kind, text, up, down);
+      box.appendChild(row);
+    }
+    const capLine = document.createElement("div");
+    capLine.className = "caption-line";
+    const capLabel = document.createElement("label");
+    capLabel.textContent = "判定のあとに添える一言：";
+    const capInput = document.createElement("input");
+    capInput.type = "text";
+    capInput.placeholder = "（任意）例：みんなの応援、届きました！";
+    capInput.value = r.caption;
+    capInput.addEventListener("change", () => {
+      r.caption = capInput.value.trim();
+      saveStore(r);
+    });
+    const useBtn = document.createElement("button");
+    useBtn.className = "btn secondary small";
+    useBtn.textContent = "最後のことばを流用";
+    useBtn.disabled = !r.queue.length;
+    useBtn.addEventListener("click", () => {
+      const items = commentItems(r);
+      const last = items.find(it => it.id === r.queue[r.queue.length - 1]);
+      if (last){
+        r.caption = last.text;
+        capInput.value = last.text;
+        saveStore(r);
+      }
+    });
+    capLine.append(capLabel, capInput, useBtn);
+    box.appendChild(capLine);
+    wrap.appendChild(box);
+  }
+}
+function moveInQueue(r, id, delta){
+  const i = r.queue.indexOf(id);
+  const j = i + delta;
+  if (i < 0 || j < 0 || j >= r.queue.length) return;
+  const tmp = r.queue[i];
+  r.queue[i] = r.queue[j];
+  r.queue[j] = tmp;
+  saveStore(r);
+  renderCommentPanel();
+}
+</script>
+
+<script>
+"use strict";
+
+/* ============ データ取り込み（共通） ============ */
+function setData(headers, records, sourceLabel){
+  const prevMap = state.headers.length ? mappingHeaderNames() : null;
+  state.headers = headers.map(h => String(h).trim());
+  state.records = records;
+  fillMappingSelects(prevMap);
+  $("mapping-panel").classList.remove("hidden");
+  $("load-status").textContent = sourceLabel + "：見出し1行＋回答 " + records.length + " 行を読み込みました。";
+  recompute();
+}
+function loadCSVText(text, sourceLabel){
+  const rows = parseCSV(text);
+  if (rows.length < 2){
+    $("load-status").textContent = "CSVの中身が読み取れませんでした。";
+    return;
+  }
+  setData(rows[0], rows.slice(1), sourceLabel);
+}
+function readFile(file){
+  const reader = new FileReader();
+  reader.onload = () => loadCSVText(String(reader.result), file.name);
+  reader.readAsText(file, "UTF-8");
+}
+
+$("file-input").addEventListener("change", e => {
+  if (e.target.files[0]) readFile(e.target.files[0]);
+});
+const dz = $("dropzone");
+["dragover", "dragenter"].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add("dragover"); }));
+["dragleave", "drop"].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove("dragover"); }));
+dz.addEventListener("drop", e => {
+  const f = e.dataTransfer.files[0];
+  if (f) readFile(f);
+});
+$("sample-btn").addEventListener("click", () => loadCSVText(SAMPLE_CSV, "サンプルデータ"));
+["map-group", "map-circle", "map-score", "map-good", "map-concern"].forEach(id => {
+  $(id).addEventListener("change", recompute);
+});
+
+/* ============ URL取得（CSV / JSON）＋自動更新 ============ */
+function setUrlStatus(msg, isError){
+  const el = $("url-status");
+  el.textContent = msg;
+  el.classList.toggle("error", !!isError);
+}
+async function fetchURLData(url){
+  const res = await fetch(url, { method: "GET", cache: "no-store" });
+  if (!res.ok) throw new Error("HTTP " + res.status + " で取得できませんでした");
+  const text = await res.text();
+  const trimmed = text.trim();
+  if (trimmed.startsWith("[") || trimmed.startsWith("{")){
+    let data;
+    try { data = JSON.parse(trimmed); }
+    catch (e) { throw new Error("JSONとして読み取れませんでした"); }
+    const norm = normalizeJSON(data);
+    if (!norm) throw new Error("JSONの形式が想定と違いました（配列、または responses 配列を含む形式にしてください）");
+    return { headers: norm.headers, records: norm.records, kind: "JSON" };
+  }
+  const rows = parseCSV(text);
+  if (rows.length < 2) throw new Error("CSVとして読み取れませんでした（公開CSVリンクか確認してください）");
+  return { headers: rows[0], records: rows.slice(1), kind: "CSV" };
+}
+async function loadFromURL(isAuto){
+  const url = $("url-input").value.trim();
+  if (!url){
+    if (!isAuto) setUrlStatus("URLが入力されていません。", true);
+    return;
+  }
+  try {
+    const data = await fetchURLData(url);
+    const key = JSON.stringify([data.headers, data.records]);
+    const now = new Date();
+    const timeStr = now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0") + ":" + String(now.getSeconds()).padStart(2, "0");
+    if (key === state.lastFetchKey){
+      setUrlStatus("最終取得 " + timeStr + "：新しい回答はありませんでした。", false);
+      return;
+    }
+    state.lastFetchKey = key;
+    const inStage = !$("stage").classList.contains("hidden");
+    if (inStage){
+      // 発表中は画面を切り替えない。戻ったときに反映する
+      state.pendingData = data;
+      $("stage-pending").classList.remove("hidden");
+      return;
+    }
+    setData(data.headers, data.records, "URL取得（" + data.kind + "）");
+    setUrlStatus("最終取得 " + timeStr + "：回答 " + data.records.length + " 件を取り込みました。", false);
+  } catch (err) {
+    if (!isAuto || !$("url-status").textContent){
+      setUrlStatus("取得に失敗しました：" + err.message +
+        "　公開設定を確認してください（シートの「ウェブに公開」／GASは「全員」アクセス）。難しければCSV方式で取り込んでください。", true);
+    } else {
+      setUrlStatus("自動更新で取得に失敗しました：" + err.message, true);
+    }
+  }
+}
+$("url-load-btn").addEventListener("click", () => loadFromURL(false));
+$("url-refresh-btn").addEventListener("click", () => loadFromURL(false));
+$("url-auto-check").addEventListener("change", e => {
+  if (e.target.checked){
+    loadFromURL(true);
+    state.autoTimer = setInterval(() => loadFromURL(true), 30000);
+  } else if (state.autoTimer){
+    clearInterval(state.autoTimer);
+    state.autoTimer = null;
+  }
+});
+
+/* ============ 効果音（Web Audio API で生成する単純な音色のみ） ============ */
+let audioCtx = null;
+function ensureAudio(){
+  if (!audioCtx){
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) audioCtx = new AC();
+  }
+  if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+}
+function playTone(freq, startOffset, dur, type, vol){
+  if (!audioCtx) return;
+  const t0 = audioCtx.currentTime + startOffset;
+  const osc = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  osc.type = type || "triangle";
+  osc.frequency.value = freq;
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol || 0.14, t0 + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(g);
+  g.connect(audioCtx.destination);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.05);
+}
+const BAND_SOUNDS = {
+  "ハイレベル！":       [523.25, 659.25, 783.99, 1046.50],
+  "かなりいいかんじ！": [523.25, 659.25, 783.99],
+  "平凡！":             [523.25, 659.25],
+  "あと一歩！":         [392.00, 523.25, 659.25],
+  "再チャレンジ！":     [440.00, 523.25, 659.25],
+};
+function playBandSound(band){
+  ensureAudio();
+  const notes = BAND_SOUNDS[band] || [523.25];
+  notes.forEach((f, i) => playTone(f, i * 0.11, 0.34, "triangle", 0.14));
+  if (notes.length >= 3){
+    notes.forEach(f => playTone(f, notes.length * 0.11, 0.55, "triangle", 0.06));
+  }
+}
+function playWordSound(){
+  ensureAudio();
+  playTone(880.00, 0, 0.12, "sine", 0.045);
+}
+
+/* ============ 発表モード ============ */
+let lastStageKey = "";
+function startStage(){
+  if (!state.results.length) return;
+  state.pos = { current: 0, phase: "cover", wordIndex: 0 };
+  lastStageKey = "";
+  ensureAudio();
+  $("setup").classList.add("hidden");
+  $("stage").classList.remove("hidden");
+  renderStage();
+}
+function endStage(){
+  $("stage").classList.add("hidden");
+  $("setup").classList.remove("hidden");
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  if (state.pendingData){
+    const data = state.pendingData;
+    state.pendingData = null;
+    $("stage-pending").classList.add("hidden");
+    setData(data.headers, data.records, "URL取得（発表中に届いた新しい回答）");
+    setUrlStatus("発表中に届いた新しい回答を反映しました（回答 " + data.records.length + " 件）。", false);
+  }
+}
+function displayName(r){
+  return r.circle || r.name;
+}
+function renderStage(){
+  const pos = state.pos;
+  const r = state.results[pos.current];
+  const stageKey = pos.current + "|" + pos.phase + "|" + pos.wordIndex + "|" + (r ? r.band : "");
+  const entered = stageKey !== lastStageKey;
+  lastStageKey = stageKey;
+
+  $("phase-cover").classList.toggle("hidden", pos.phase !== "cover");
+  $("phase-words").classList.toggle("hidden", pos.phase !== "words");
+  $("phase-judge").classList.toggle("hidden", pos.phase !== "judge");
+  $("phase-finale").classList.toggle("hidden", pos.phase !== "finale");
+
+  if (pos.phase === "finale"){
+    $("stage-progress").textContent = "リザルト発表　おつかれさまでした";
+    $("finale-message").textContent = $("closing-input").value.trim() ||
+      "どのサークルにも、審査係からのことばが届きました。みなさん、おつかれさまでした！";
+    const list = $("finale-list");
+    list.innerHTML = "";
+    for (const g of state.results){
+      const chip = document.createElement("div");
+      chip.className = "finale-chip";
+      chip.textContent = displayName(g);
+      list.appendChild(chip);
+    }
+  } else if (r){
+    $("stage-progress").textContent =
+      "リザルト発表　" + (pos.current + 1) + " / " + state.results.length + " グループ";
+    if (pos.phase === "cover"){
+      $("cover-group").textContent = r.circle ? r.name : "";
+      $("cover-circle").textContent = displayName(r);
+    } else if (pos.phase === "words"){
+      const items = commentItems(r);
+      const item = items.find(it => it.id === r.queue[pos.wordIndex]);
+      $("words-group").textContent = displayName(r);
+      $("words-count").textContent = "ことば " + (pos.wordIndex + 1) + " / " + r.queue.length;
+      if (item){
+        // アニメーション再生のためカードを作り直す
+        const card = $("word-card");
+        const clone = card.cloneNode(true);
+        clone.querySelector("#word-kind").textContent = item.kind;
+        clone.querySelector("#word-kind").className = "kind" + (item.concern ? " concern" : "");
+        clone.querySelector("#word-text").textContent = item.text;
+        card.replaceWith(clone);
+        clone.id = "word-card";
+      }
+      if (entered) playWordSound();
+    } else if (pos.phase === "judge"){
+      $("judge-group").textContent = displayName(r);
+      const jt = $("judge-text");
+      const clone = jt.cloneNode(true);
+      clone.textContent = r.band;
+      jt.replaceWith(clone);
+      clone.id = "judge-text";
+      $("judge-medal").classList.toggle("hidden", r.band !== "ハイレベル！");
+      const cap = $("judge-caption");
+      if (r.caption){
+        cap.textContent = r.caption;
+        cap.classList.remove("hidden");
+      } else {
+        cap.textContent = "";
+        cap.classList.add("hidden");
+      }
+      $("judge-avg").textContent = "賛成度の平均 " + r.avg.toFixed(1) + "（回答 " + r.count + " 件）";
+      if (entered){
+        playBandSound(r.band);
+        spawnConfetti();
+      }
+    }
+  }
+  $("back-btn").disabled = (pos.current === 0 && pos.phase === "cover");
+  $("next-btn").textContent = pos.phase === "finale" ? "おわる" :
+    (pos.phase === "judge" && pos.current === state.results.length - 1) ? "まとめへ →" : "つぎへ →";
+}
+function spawnConfetti(){
+  const stage = $("stage");
+  stage.querySelectorAll(".confetti").forEach(el => el.remove());
+  const colors = ["#3AAFA9", "#7ACFC8", "#FFC93C", "#0E7C7B", "#BFE8E4"];
+  for (let i = 0; i < 26; i++){
+    const d = document.createElement("div");
+    d.className = "confetti";
+    const size = 8 + Math.random() * 10;
+    d.style.width = size + "px";
+    d.style.height = size + "px";
+    d.style.left = Math.random() * 100 + "vw";
+    d.style.top = "-4vh";
+    d.style.background = colors[i % colors.length];
+    d.style.animationDuration = (1.6 + Math.random() * 1.8) + "s";
+    stage.appendChild(d);
+    setTimeout(() => d.remove(), 3800);
+  }
+}
+function advance(){
+  state.pos = advancePos(state.pos, state.results);
+  if (state.pos.phase === "done"){ endStage(); return; }
+  renderStage();
+}
+function retreat(){
+  state.pos = retreatPos(state.pos, state.results);
+  renderStage();
+}
+$("start-btn").addEventListener("click", () => {
+  startStage();
+  const el = $("stage");
+  if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+});
+$("next-btn").addEventListener("click", e => { e.stopPropagation(); advance(); });
+$("back-btn").addEventListener("click", e => { e.stopPropagation(); retreat(); });
+$("stage").addEventListener("click", e => {
+  if (e.target.closest(".stage-nav")) return;
+  advance();
+});
+document.addEventListener("keydown", e => {
+  if ($("stage").classList.contains("hidden")) return;
+  if (e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); advance(); }
+  else if (e.key === "ArrowLeft"){ e.preventDefault(); retreat(); }
+  else if (e.key === "Escape"){ endStage(); }
+});
+</script>
+</body>
+</html>
