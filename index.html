@@ -156,6 +156,7 @@
   .judge-text{
     font-size:clamp(64px,12vw,176px);font-weight:900;color:var(--ink);line-height:1.15;
     margin-top:1vh;animation:pop .55s cubic-bezier(.2,1.6,.4,1);
+    white-space:nowrap;max-width:96vw;text-align:center;
   }
   .judge-caption{
     font-size:clamp(22px,3.2vw,42px);font-weight:700;color:var(--ink);line-height:1.5;
@@ -550,7 +551,7 @@ function guessColumn(headers, keywords){
 }
 const MAP_DEFS = [
   ["map-group",   ["グループ", "団体", "発表を聞いた"]],
-  ["map-circle",  ["サークル名", "サークル"]],
+  ["map-circle",  ["サークル名", "サークルの名前"]],
   ["map-score",   ["賛成度", "賛成", "支持", "スコア", "評価"]],
   ["map-good",    ["良かった", "よかった", "良い点", "魅力"]],
   ["map-concern", ["気になった", "改善", "心配", "課題"]],
@@ -829,6 +830,9 @@ $("sample-btn").addEventListener("click", () => loadCSVText(SAMPLE_CSV, "サン�
 });
 
 /* ============ URL取得（CSV / JSON）＋自動更新 ============ */
+// 配線済みデータソース（初期値）：審査フォーム回答スプレッドシートの公開CSV（gviz経由）
+// GAS Webアプリの /exec URL が用意できたら、ここをそのURLに差し替える（設定画面でも変更可）
+const DEFAULT_DATA_URL = "https://docs.google.com/spreadsheets/d/1DuzFVKT-Y522Fu7N4e4h9Dbk10RWa7y61uEHNMel_Ik/gviz/tq?tqx=out:csv";
 function setUrlStatus(msg, isError){
   const el = $("url-status");
   el.textContent = msg;
@@ -848,7 +852,8 @@ async function fetchURLData(url){
     return { headers: norm.headers, records: norm.records, kind: "JSON" };
   }
   const rows = parseCSV(text);
-  if (rows.length < 2) throw new Error("CSVとして読み取れませんでした（公開CSVリンクか確認してください）");
+  if (rows.length < 1) throw new Error("CSVとして読み取れませんでした（公開CSVリンクか確認してください）");
+  // 見出しのみ（回答0件）のCSVも正常として扱う
   return { headers: rows[0], records: rows.slice(1), kind: "CSV" };
 }
 async function loadFromURL(isAuto){
@@ -896,6 +901,14 @@ $("url-auto-check").addEventListener("change", e => {
     state.autoTimer = null;
   }
 });
+
+/* 起動時：配線済みデータソースがあれば、自動取得＋自動更新ONで開始する */
+if (DEFAULT_DATA_URL){
+  $("url-input").value = DEFAULT_DATA_URL;
+  $("url-auto-check").checked = true;
+  loadFromURL(true);
+  state.autoTimer = setInterval(() => loadFromURL(true), 30000);
+}
 
 /* ============ 効果音（Web Audio API で生成する単純な音色のみ） ============ */
 let audioCtx = null;
@@ -967,6 +980,26 @@ function endStage(){
 function displayName(r){
   return r.circle || r.name;
 }
+
+/* 判定語を必ず1行に収める：特大表示は維持しつつ、文字数から上限サイズを算出し、実測で最終調整する */
+function fitJudgeText(el){
+  if (!el) return;
+  const text = el.textContent || "";
+  const len = Math.max(1, [...text].length);
+  const avail = window.innerWidth * 0.96;
+  el.style.fontSize = "";
+  const cssSize = parseFloat(getComputedStyle(el).fontSize) || 120;
+  // 全角1文字 ≒ 1em（太字900ではやや広めに見積もる）として、文字数から収まる上限を決める
+  let size = Math.min(cssSize, avail / (len * 1.04));
+  el.style.fontSize = size + "px";
+  // 実測（scrollWidth＝文字の実描画幅）で確認し、はみ出す場合は段階的に縮小する
+  let guard = 0;
+  while (el.scrollWidth > avail && size > 24 && guard < 40){
+    size *= 0.95;
+    el.style.fontSize = size + "px";
+    guard++;
+  }
+}
 function renderStage(){
   const pos = state.pos;
   const r = state.results[pos.current];
@@ -1020,6 +1053,7 @@ function renderStage(){
       clone.textContent = r.band;
       jt.replaceWith(clone);
       clone.id = "judge-text";
+      fitJudgeText(clone);
       $("judge-medal").classList.toggle("hidden", r.band !== "ハイレベル！");
       const cap = $("judge-caption");
       if (r.caption){
@@ -1077,6 +1111,10 @@ $("back-btn").addEventListener("click", e => { e.stopPropagation(); retreat(); }
 $("stage").addEventListener("click", e => {
   if (e.target.closest(".stage-nav")) return;
   advance();
+});
+window.addEventListener("resize", () => {
+  if ($("stage").classList.contains("hidden")) return;
+  if (state.pos.phase === "judge") fitJudgeText($("judge-text"));
 });
 document.addEventListener("keydown", e => {
   if ($("stage").classList.contains("hidden")) return;
