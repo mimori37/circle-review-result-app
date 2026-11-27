@@ -616,6 +616,31 @@ function recompute(){
       if (saved.circle) r.circle = saved.circle;
     }
   }
+  // 事務局プリセット（本番用）：まだ手で選ばれていないグループに、選定済みのことばとサークル名を初期適用する
+  const PRESET = {
+    "グループ1": { circle: "カフェ巡りサークル", queue: ["g1", "g3", "g29"] },
+    "グループ2": { circle: "虫取りサークル", queue: ["g5", "g13", "g18"] },
+    "グループ3": { circle: "沖縄の魅力発信 🌴しまぐるり🌸", queue: ["g5", "g9", "g23"] },
+    "グループ4": { circle: "伝統工芸品サークル", queue: ["g0", "g18", "g26"] },
+    "グループ5": { circle: "スポーツ観戦サークル", queue: ["g22", "g20", "g25"] },
+    "グループ6": { circle: "つりんちゅ（釣りサークル）", queue: ["g6", "g2", "g24"] },
+    "グループ7": { circle: "STAR WORLD ~Let’s cooking Let’s looking~", queue: ["g9", "g19", "g21"] },
+    "グループ8": { circle: "世界旅行サークル", queue: null },
+  };
+  for (const r of results){
+    const p = PRESET[r.name];
+    if (!p) continue;
+    if (p.circle && !r.circle) r.circle = p.circle;
+    if (p.queue){
+      const def = defaultQueue(r);
+      const untouched = r.queue.length === def.length && r.queue.every((id, i) => id === def[i]);
+      if (untouched){
+        const validIds = new Set(commentItems(r).map(it => it.id));
+        const q = p.queue.filter(id => validIds.has(id));
+        if (q.length) r.queue = q;
+      }
+    }
+  }
   // 発表順を引き継ぐ（新しいグループは末尾）
   if (state.orderNames.length){
     const byName = {};
